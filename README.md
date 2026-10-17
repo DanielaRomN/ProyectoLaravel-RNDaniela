@@ -1,66 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CI Pipeline para Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Objetivo
 
-## About Laravel
+Automatizar la instalación de dependencias y la ejecución de pruebas de la aplicación Laravel mediante GitHub Actions, verificando cada cambio enviado a la rama principal.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tecnologías
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP [tu versión, ej. 8.4]
+- Laravel [tu versión, ej. 11]
+- Composer
+- PHPUnit
+- Git y GitHub
+- GitHub Actions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requisitos
 
-## Learning Laravel
+- PHP compatible con el proyecto
+- Composer
+- Git
+- Cuenta y repositorio en GitHub
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Instalación local
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/[tu-usuario]/[tu-repo].git
+   cd [tu-repo]
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. Instalar dependencias:
+    composer install
 
-## Laravel Sponsors
+3. Copiar el archivo de entorno y generar la clave:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    cp .env.example .env
+    php artisan key:generate
 
-### Premium Partners
+4. Configurar la base de datos requerida (para pruebas se usa SQLite en memoria).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+5. Ejecutar migraciones si son necesarias:
 
-## Contributing
+    php artisan migrate
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+6. Ejecutar las pruebas:
 
-## Code of Conduct
+    php artisan test
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Integración continua
+    El workflow .github/workflows/ci.yml se ejecuta automáticamente al hacer push a la rama main o al crear un pull request dirigido a ella.
 
-## Security Vulnerabilities
+    El pipeline realiza lo siguiente:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    Obtiene el código del repositorio.
 
-## License
+    Configura PHP con las extensiones necesarias.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    Valida composer.json.
+
+    Instala las dependencias.
+
+    Prepara el entorno Laravel (.env y key:generate).
+
+    Ejecuta las pruebas automatizadas con php artisan test.
+
+## Pruebas
+    La prueba principal es tests/Feature/HomePageTest.php, que realiza una petición HTTP a la ruta / y verifica que la respuesta sea exitosa (HTTP 200).
+
+    php
+    public function test_home_page_is_accessible(): void
+    {
+        $response = $this->get('/');
+        $response->assertSuccessful();
+    }
+
+## Resultado esperado
+    La prueba debe pasar en local y en GitHub Actions.
+
+    El pipeline debe finalizar en verde.
+
+## Resultado obtenido
+    Ejecución local: [PASS / FAIL]
+
+    Ejecución en GitHub Actions: [PASS / FAIL]
+
+## Evidencias
+Repositorio: https://github.com/DanielaRomN/ProyectoLaravel-RNDaniela/actions/runs/38983624785
+
+Ejecución exitosa inicial: [enlace a la ejecución]
+
+Ejecución fallida controlada: [enlace a la ejecución]
+
+Ejecución exitosa posterior a la corrección: [enlace a la ejecución]
+
+Ejecución fallida controlada
+Se modificó la aserción de assertSuccessful() a assertStatus(404). Como la ruta / responde con HTTP 200, la prueba falló con el mensaje:
+
+text
+Expected response status code [404] but received 200.
+GitHub Actions marcó el job como fallido, demostrando que el pipeline detecta y reporta errores correctamente.
+
+Solución: restaurar la aserción original assertSuccessful().
+
+Ejecución exitosa posterior
+Tras restaurar la aserción y hacer push, el pipeline volvió a pasar en verde, confirmando que el flujo de integración continua funciona de extremo a extremo.
